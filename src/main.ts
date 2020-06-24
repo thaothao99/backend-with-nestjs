@@ -12,7 +12,7 @@ async function bootstrap() {
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
-  console.log(process.env.PORT)
+  // console.log(process.env.PORT)
   Logger.log(`🚀 Server ready at http://localhost:${port}`, 'Bootstrap')
 
 }
