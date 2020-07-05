@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Account } from './acc.interface'
+import { Account } from './account.interface'
 import { CreateAccDTO } from './create-acc.dto'
 
 @Injectable()
@@ -24,5 +24,9 @@ export class AccountService {
   async delAcc(_id):Promise<any>{
     const deletedAcc = await this.AccModel.findByIdAndRemove(_id).exec();
     return deletedAcc;
+  }
+  async updateAcc(_id, createAccDTO: CreateAccDTO): Promise<Account>{
+    const updatedCustomer = await this.AccModel.findByIdAndUpdate(_id, createAccDTO, { new: true });
+    return updatedCustomer;
   }
 }
