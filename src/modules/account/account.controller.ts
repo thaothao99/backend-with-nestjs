@@ -1,36 +1,32 @@
 import { Controller, Get, Res, HttpStatus, Post, Body, Put, Query, NotFoundException, Delete, Param } from '@nestjs/common';
 import { AccountService } from './account.service'
 import { CreateAccDTO } from './create-acc.dto'
-@Controller()
+@Controller('account')
 export class AccountController {
-  constructor(private customerService: AccountService) { }
+  constructor(private accService: AccountService) { }
   // add a customer
   @Post('/create')
   async addCustomer(@Res() res, @Body() createCustomerDTO: CreateAccDTO) {
-      const customer = await this.customerService.addAcc(createCustomerDTO);
-      if(!createCustomerDTO) {
-          return 'error'
-      }
-      console.log(createCustomerDTO)
+      const customer = await this.accService.addAcc(createCustomerDTO);
       return res.status(HttpStatus.OK).json({
-          message: "Customer has been created successfully",
+          message: "Account has been created successfully",
           customer
       })
   }
 
   // Retrieve customers list
-  @Get('api/customers')
+  @Get('accounts')
   async getAllCustomer(@Res() res) {
-      const customers = await this.customerService.getAllAcc();
-      return res.status(HttpStatus.OK).json(customers);
+      const acc = await this.accService.getAllAcc();
+      return res.status(HttpStatus.OK).json(acc);
   }
 
   // Fetch a particular customer using ID
-  @Get('customer/:customerID')
-  async getCustomer(@Res() res, @Param('customerID') customerID) {
-      const customer = await this.customerService.getAccByIds(customerID);
-      if (!customer) throw new NotFoundException('Customer does not exist!');
-      return res.status(HttpStatus.OK).json(customer);
+  @Get('account/:accountID')
+  async getCustomer(@Res() res, @Param('accountID') accountID) {
+      const acc = await this.accService.getAccByIds(accountID);
+      if (!acc) throw new NotFoundException('Account does not exist!');
+      return res.status(HttpStatus.OK).json(acc);
   }
 
 }
