@@ -3,20 +3,29 @@ import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 
+dotenv.config();
+const port = process.env.PORT || 3000;
 declare const module: any;
-dotenv.config()
-const port = process.env.PORT || 3000
+var allowedOrigins = [`http://localhost:3000`];
 
+const options = {
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  credentials: true,
+}
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: options,
+    logger: true
+  })
   await app.listen(port);
 
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
-  app.enableCors(); 
-  Logger.log(`🚀 Server ready at http://localhost:${port}`, 'Bootstrap')
-
+  Logger.log(`🚀 Server running on http://localhost:${port}/graphql `, 'Bootstrap');
 }
-bootstrap();
+bootstrap()
