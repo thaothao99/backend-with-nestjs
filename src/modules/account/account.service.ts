@@ -2,7 +2,9 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Account } from './account.interface';
-import { CreateAccDTO } from './create-acc.dto';
+import { CreateAccDTO, LoginAccDTO } from './create-acc.dto';
+import * as bcrypt from 'bcryptjs';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AccountService {
@@ -18,22 +20,34 @@ export class AccountService {
     return acc;
   }
   async addAcc(createAccDTO: CreateAccDTO): Promise<Account> {
-    const existedUsername = await this.AccModel.findOne({
-      username: createAccDTO.username,
-    }).exec();
-    if (existedUsername)
-      throw new HttpException(
-        'Username has been taken!',
-        HttpStatus.BAD_REQUEST,
-      );
     const existedEmail = await this.AccModel.findOne({
       email: createAccDTO.email,
     }).exec();
     if (existedEmail)
-      throw new HttpException('Email has been taken!', HttpStatus.BAD_REQUEST);
-    const newAcc = new this.AccModel(createAccDTO);
+      throw new HttpException('Email has been taken!', HttpStatus.CONFLICT);
+
+    const existedUsername = await this.AccModel.findOne({
+      username: createAccDTO.username,
+    }).exec();
+    if (existedUsername)
+      throw new HttpException('Username has been taken!', HttpStatus.CONFLICT);
+
+    const hashedPassword = bcrypt.hashSync(
+      createAccDTO.password,
+      bcrypt.genSaltSync(10),
+    );
+    const data = {
+      username: createAccDTO.username,
+      password: hashedPassword,
+      name: createAccDTO.name,
+      phone: createAccDTO.phone,
+      email: createAccDTO.email,
+    };
+
+    const newAcc = new this.AccModel(data);
     return newAcc.save();
   }
+
   async delAcc(_id: string): Promise<any> {
     const deletedAcc = await this.AccModel.findByIdAndRemove(_id).exec();
     return deletedAcc;
@@ -45,5 +59,29 @@ export class AccountService {
       { new: true },
     );
     return updatedAccount;
+  }
+  async login(loginAcc: LoginAccDTO): Promise<string> {
+    const existedAcc = await this.AccModel.findOne({
+      username: loginAcc.username,
+    }).exec();
+    console.log(existedAcc, loginAcc);
+    if (
+      !existedAcc ||
+      !bcrypt.compareSync(loginAcc.password, existedAcc.password)
+    )
+      throw new HttpException(
+        'Username or password is incorrect!',
+        HttpStatus.UNAUTHORIZED,
+      );
+    else {
+      const token = jwt.sign(
+        {
+          id: existedAcc._id,
+          username: existedAcc.username,
+        },
+        'PIKACHU_CUTE_LALALA',
+      );
+      return token;
+    }
   }
 }

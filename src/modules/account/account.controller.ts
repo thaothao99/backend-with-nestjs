@@ -10,7 +10,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
-import { CreateAccDTO } from './create-acc.dto';
+import { CreateAccDTO, LoginAccDTO } from './create-acc.dto';
 @Controller('account')
 export class AccountController {
   constructor(private accService: AccountService) {}
@@ -42,16 +42,21 @@ export class AccountController {
   async updateAccount(
     @Res() res,
     @Query('accountID') accountID,
-    @Body() createCustomerDTO: CreateAccDTO,
+    @Body() createAccDTO: CreateAccDTO,
   ) {
-    const account = await this.accService.updateAcc(
-      accountID,
-      createCustomerDTO,
-    );
+    const account = await this.accService.updateAcc(accountID, createAccDTO);
     if (!account) throw new NotFoundException('Account does not exist!');
     return res.status(HttpStatus.OK).json({
-      message: 'Account has been successfully updated',
+      message: 'Account has been successfully updated!',
       account,
+    });
+  }
+  @Post('/login')
+  async login(@Res() res, @Body() loginAcc: LoginAccDTO) {
+    const token = await this.accService.login(loginAcc);
+    return res.status(HttpStatus.OK).json({
+      message: 'Login success!',
+      token,
     });
   }
 }
