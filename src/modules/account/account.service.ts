@@ -64,7 +64,6 @@ export class AccountService {
     const existedAcc = await this.AccModel.findOne({
       username: loginAcc.username,
     }).exec();
-    console.log(existedAcc, loginAcc);
     if (
       !existedAcc ||
       !bcrypt.compareSync(loginAcc.password, existedAcc.password)
