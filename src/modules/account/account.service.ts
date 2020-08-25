@@ -78,7 +78,7 @@ export class AccountService {
           id: existedAcc._id,
           username: existedAcc.username,
         },
-        'PIKACHU_CUTE_LALALA',
+        process.env.SERECT_KEY,
       );
       return token;
     }
