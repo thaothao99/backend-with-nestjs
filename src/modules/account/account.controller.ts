@@ -8,9 +8,12 @@ import {
   Query,
   NotFoundException,
   Param,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccDTO, LoginAccDTO } from './create-acc.dto';
+import { AuthGuard } from '@nestjs/passport';
 @Controller('account')
 export class AccountController {
   constructor(private accService: AccountService) {}
@@ -58,5 +61,10 @@ export class AccountController {
       message: 'Login success!',
       token,
     });
+  }
+  @UseGuards(AuthGuard('google'))
+  @Post('/login-mail')
+  async loginByMail(@Req() req) {
+
   }
 }

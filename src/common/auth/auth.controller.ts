@@ -7,12 +7,14 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   googleLogin() {}
 
-  @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  googleLoginCallback(@Req() req, @Res() res) {
-    // handles the Google OAuth2 callback
-    const jwt: string = req.user.jwt;
-    if (jwt) res.redirect('http://localhost:3000/login' + jwt);
-    else res.redirect('http://localhost:3000/login');
+  @Get('google/callback')
+  async googleLoginCallback(@Req() req, @Res() res) {
+    const jwt: string = await req.user.jwt;
+    console.log(jwt);
+    return {
+      message: 'success',
+      jwt,
+    };
   }
 }

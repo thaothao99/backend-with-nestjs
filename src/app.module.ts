@@ -13,7 +13,6 @@ import { GoogleStrategy } from './common/auth/google.strategy';
     }),
     AccountModule,
     AuthModule,
-    GoogleStrategy,
   ],
   controllers: [AppController],
   providers: [AppService],
