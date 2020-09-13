@@ -12,7 +12,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientSecret: '7L1KDRYuHkna2MC9QMxX6Apo', // <- Replace this with your client secret
       callbackURL: 'http://localhost:4000/auth/google/callback',
       passReqToCallback: true,
-      scope: ['profile'],
+      scope: ['profile', 'email'],
     });
   }
 
@@ -24,13 +24,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     done: VerifyCallback,
   ): Promise<any> {
     try {
-      console.log(profile);
-      const jwt: string = await this.authService.validateOAuthLogin(
-        profile.id,
-        Provider.GOOGLE,
-      );
+      // console.log(profile);
+      const { name, emails } = profile;
       const user = {
-        jwt,
+        email: emails[0].value,
+        firstName: name.givenName,
+        lastName: name.familyName,
+        accessToken,
       };
       done(null, user);
     } catch (err) {

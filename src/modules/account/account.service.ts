@@ -76,7 +76,7 @@ export class AccountService {
       const token = jwt.sign(
         {
           id: existedAcc._id,
-          username: existedAcc.username,
+          email: existedAcc.email,
         },
         process.env.SERECT_KEY,
       );
