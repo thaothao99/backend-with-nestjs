@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class AuthTokenGuard implements CanActivate {
+export class AuthGaurd implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
