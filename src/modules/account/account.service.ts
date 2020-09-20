@@ -83,4 +83,9 @@ export class AccountService {
       return token;
     }
   }
+  async getMe(token: string): Promise<any> {
+    const decodeToken = await jwt.verify(token, process.env.SERECT_KEY);
+    console.log(decodeToken);
+    return decodeToken;
+  }
 }

@@ -14,6 +14,7 @@ import {
 import { AccountService } from './account.service';
 import { CreateAccDTO, LoginAccDTO } from './create-acc.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthTokenGuard } from 'src/common/authecation.guard';
 @Controller('account')
 export class AccountController {
   constructor(private accService: AccountService) {}
@@ -64,7 +65,13 @@ export class AccountController {
   }
   @UseGuards(AuthGuard('google'))
   @Post('/login-mail')
-  async loginByMail(@Req() req) {
-
+  async loginByMail(@Req() req) {}
+  @UseGuards(new AuthTokenGuard())
+  @Get('/me')
+  async getMe(@Res() res, @Req() req) {
+    console.log(req.headers.authorization.split(' ')[1]);
+    return res.status(HttpStatus.OK).json({
+      message: 'success!',
+    });
   }
 }
