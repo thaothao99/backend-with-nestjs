@@ -88,4 +88,22 @@ export class AccountService {
     console.log(decodeToken);
     return decodeToken;
   }
+  async loginByMail(user: any): Promise<string> {
+    // console.log(user);
+    const existedAcc = await this.AccModel.findOne({ email: user.email });
+    console.log(existedAcc);
+    if (!existedAcc) {
+      throw new HttpException('Sign up account!', HttpStatus.UNAUTHORIZED);
+    } else {
+      const token = await jwt.sign(
+        {
+          id: existedAcc._id,
+          email: existedAcc.email,
+        },
+        process.env.SERECT_KEY,
+      );
+      return token;
+      return token;
+    }
+  }
 }
