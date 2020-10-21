@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import * as jwt from 'jsonwebtoken';
-import { AccountService } from 'src/modules/account/account.service';
+import { AccountService } from '../account/account.service';
 export enum Provider {
   GOOGLE = 'google',
 }
@@ -13,7 +12,6 @@ export class AuthService {
       if (!user) throw new InternalServerErrorException('validateOAUthLogin');
       else {
         const token = await this.accService.loginByMail(user);
-        // const { token } = user;
         return token;
       }
     } catch (error) {

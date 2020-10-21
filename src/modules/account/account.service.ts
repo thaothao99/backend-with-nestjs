@@ -91,7 +91,7 @@ export class AccountService {
   async loginByMail(user: any): Promise<string> {
     // console.log(user);
     const existedAcc = await this.AccModel.findOne({ email: user.email });
-    console.log(existedAcc);
+    // console.log(existedAcc);
     if (!existedAcc) {
       throw new HttpException('Sign up account!', HttpStatus.UNAUTHORIZED);
     } else {
@@ -102,7 +102,6 @@ export class AccountService {
         },
         process.env.SERECT_KEY,
       );
-      return token;
       return token;
     }
   }
